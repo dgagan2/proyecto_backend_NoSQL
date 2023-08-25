@@ -1,6 +1,7 @@
 const expressAsyncHandler = require("express-async-handler");
-const {validarEmail, validarPassword}= require("../services/validations/userValidation")
-const User = require("../models/usersModels")
+const {validarEmail, validarPassword}= require("../../services/validations/userValidation")
+const User = require("../../models/user/usersModels")
+const Profile = require("../../models/user/profileUserModels")
 const bcrypt= require("bcrypt")
 const signup = expressAsyncHandler(async (req, res)=>{
     const {email, password, name, age, address, phoneNumber } = req.body
@@ -34,21 +35,23 @@ const signup = expressAsyncHandler(async (req, res)=>{
 
     const user= await User.create({
         email,
-        password: hashedPassword,
-        name,
-        age,
-        address,
-        phoneNumber
+        password: hashedPassword
     })
-    delete user.password
     if(user){
+        const profile = await Profile.create({
+            user: user.id,
+            name,
+            age,
+            address,
+            phoneNumber
+        })
         res.status(201).json({
             id: user.id,
             email: user.email,
-            name: user.name,
-            age: user.age,
-            address: user.address,
-            phoneNumber: user.phoneNumber
+            name: profile.name,
+            age: profile.age,
+            address: profile.address,
+            phoneNumber: profile.phoneNumber
         })
     }else{
         res.status(400)

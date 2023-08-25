@@ -1,9 +1,7 @@
-const signup = require("../controllers/signup")
-
+const usersRoutes = require("./user/user.routes")
 const routerApi = (app)=>{
     app.get('/', (req, res)=>{res.send("Welcome")})
-    app.post("/signup", signup )
-    // app.use("/signup")
+    app.use("/user", usersRoutes)
     app.get('*', (req, res)=>{res.status(400).json({message:"Not found"})})
 }
 

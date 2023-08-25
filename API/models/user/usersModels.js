@@ -17,19 +17,6 @@ const userSchema = mongoose.Schema({
     role:{
         type: String,
         default: "customer"
-    },
-    name:{
-        type:String,
-        required: [true, "El nombre no puede estar vacio"]
-    },
-    age:{
-        type: Number,
-    },
-    address:{
-        type: String,
-    },
-    phoneNumber:{
-        type: String
     }
 },
     {timestamps:true}
