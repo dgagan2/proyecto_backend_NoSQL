@@ -8,5 +8,13 @@ const connectDB =async()=>{
         process.exit(1)
     }
 }
-
-module.exports= connectDB
+const disconnectDB = ()=>{
+    mongoose.disconnect()
+    .then(() => {
+        console.log('Conexión a la base de datos cerrada');
+      })
+      .catch(err => {
+        console.error('Error al cerrar la conexión:', err);
+      })
+}
+module.exports={ connectDB, disconnectDB}

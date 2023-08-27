@@ -3,7 +3,10 @@ const {validarEmail, validarPassword}= require("../../services/validations/userV
 const User = require("../../models/user/usersModels")
 const Profile = require("../../models/user/profileUserModels")
 const bcrypt= require("bcrypt")
+const {connectDB, disconnectDB}=require("../../config/db")
+
 const signup = expressAsyncHandler(async (req, res)=>{
+    
     const {email, password, name, age, address, phoneNumber } = req.body
     if(!email){
         res.status(400)

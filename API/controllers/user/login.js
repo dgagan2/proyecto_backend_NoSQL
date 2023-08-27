@@ -5,7 +5,10 @@ const bcrypt = require("bcrypt")
 const getToken= require("../../services/jwt/tokenSignin")
 const Profile = require("../../models/user/profileUserModels")
 const {validarPassword}=require("../../services/validations/userValidation")
+const {connectDB, disconnectDB}=require("../../config/db")
+
 const login = expressAsyncHandler(async (req, res)=>{
+    
     const { email, password } = req.body
     if(!email || !password){
         throw new Error("Debe ingresar un usuario y contraseña")
@@ -39,11 +42,13 @@ const login = expressAsyncHandler(async (req, res)=>{
             token: token
         })
     }else{
+        res.status(401)
         throw new Error("Usuario o contraseña incorrecto")
     }
 })
 
 const validateEmail=expressAsyncHandler(async (req, res)=>{
+    
     const {email}= req.body
     if(!email){
         throw new Error("Usuario no existe")
@@ -56,6 +61,7 @@ const validateEmail=expressAsyncHandler(async (req, res)=>{
 })
 
 const updatePassword= expressAsyncHandler(async (req, res)=>{
+    
     const {email, password}= req.body
     if(!email || !password){
         throw new Error("Los campos estan vacios")
@@ -77,7 +83,6 @@ const updatePassword= expressAsyncHandler(async (req, res)=>{
         })
         res.status(200).json({message: "Contraseña actualizada"})
     }
-    
 })
 
 module.exports = {validateEmail,login, updatePassword}
