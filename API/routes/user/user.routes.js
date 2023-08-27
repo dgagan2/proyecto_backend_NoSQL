@@ -1,5 +1,4 @@
 const express = require("express")
-const { model } = require("mongoose")
 const passport = require("passport")
 const usersRoutes = express.Router()
 const signup = require("../../controllers/user/signup")
@@ -12,6 +11,7 @@ const { getAllUsers,
     getUserByRole,
     getUserByState} = require("../../controllers/user/getUsers")
 
+// Rutas publicas de inicio de sesion y registro
 usersRoutes.post("/signup", signup )
 usersRoutes.post("/login", login)
 usersRoutes.post("/validate", validateEmail)
