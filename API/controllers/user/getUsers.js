@@ -1,7 +1,6 @@
 const expressAsyncHandler = require("express-async-handler")
 const User = require("../../models/user/usersModels")
-const {connectDB, disconnectDB}=require("../../config/db")
-const e = require("express")
+
 
 
 const getAllUsers= expressAsyncHandler(async (req, res)=>{

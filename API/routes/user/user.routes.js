@@ -4,6 +4,7 @@ const usersRoutes = express.Router()
 const signup = require("../../controllers/user/signup")
 const {login, validateEmail, updatePassword} = require("../../controllers/user/login")
 const {checkAdminRole, checkRoles} = require("../../middleware/auth.handler")
+const {addSeller}=require("../../controllers/user/seller")
 const {updateRole, updateState, changePassword}=require("../../controllers/user/updateUser")
 const { getAllUsers,
     getUserById,
@@ -27,5 +28,6 @@ usersRoutes.post("/state", passport.authenticate('jwt', {session:false}), checkA
 usersRoutes.patch("/role", passport.authenticate('jwt', {session:false}), checkAdminRole, updateRole)
 usersRoutes.patch("/state", passport.authenticate('jwt', {session:false}), checkAdminRole, updateState)
 usersRoutes.patch("/updatepassword", passport.authenticate('jwt', {session: false}) ,changePassword)
+usersRoutes.post("/seller", passport.authenticate('jwt', {session: false}) , addSeller)
 
 module.exports = usersRoutes
