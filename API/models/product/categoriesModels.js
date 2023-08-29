@@ -1,5 +1,5 @@
 const mongoose = require("mongoose")
-const categorieSchema=mongoose.Schema({
+const categorySchema=mongoose.Schema({
     name:{
         type:String,
         required:[true, "Nombre de la categoria vacio"],
@@ -7,4 +7,4 @@ const categorieSchema=mongoose.Schema({
     }
 },{timestamps: true})
 
-module.exports=mongoose.model("Categorie", categorieSchema)
+module.exports=mongoose.model("Category", categorySchema)

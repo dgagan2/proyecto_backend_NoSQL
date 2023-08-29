@@ -10,8 +10,9 @@ const productSchema=mongoose.Schema({
         require:[true, "El precio esta vacio"]
     },
     category:{
-        type: Array,
-        require: [true, "Categoria necesaria"]
+        type: mongoose.Schema.Types.ObjectId,
+        require: [true, "Categoria necesaria"],
+        ref:'Categorie'
     },
     description:{
         type: String,
