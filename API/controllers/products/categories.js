@@ -4,15 +4,16 @@ const Category = require("../../models/product/categoriesModels")
 const addCategory=expressAsyncHandler(async (req, res)=>{
     const {name}=req.body
     if(!name){
-        throw new Error("Ingrese un nombre")
+        throw new Error("Ingrese un nombre para la categoria")
     }
-    const newCategory=await Category.create({name})
+    const newName=primeraLetraMayuscula(name)
+    const newCategory=await Category.create({name:newName})
     res.status(201).json(newCategory)
 })
 
 const getAllCategories=expressAsyncHandler(async (req, res)=>{
-    const limit = req.query.limit
-    const category = limit ? await Category.find({}).limit(limit).exec()
+    const {limit, skip}=req.body
+    const category = limit || skip ? await Category.find({}).limit(limit).skip(skip).exec()
                         : await Category.find({})
     if(category){
         res.status(200).json(category)
@@ -22,7 +23,6 @@ const getAllCategories=expressAsyncHandler(async (req, res)=>{
 })
 
 const getCategoryById = expressAsyncHandler(async (req, res)=>{
-    
     const category = await Category.findById(req.params.id)
     if(category){
         res.status(200).json(category)
@@ -32,10 +32,14 @@ const getCategoryById = expressAsyncHandler(async (req, res)=>{
 })
 
 const getCategoryByName = expressAsyncHandler(async (req, res)=>{
-    let name = req.query.name
-    name ? null : name=req.body.name
-    const category = await User.findOne({name})
+    const {name}=req.query
+
+    if(!name){
+        throw new Error("Digite la categoria a buscar")
+    }
+    const category = await Category.find({name: {$regex:name, $options:'i'}})
     if(category){
+        console.log(category)
         res.status(200).json(category)
     }else{
         res.status(404)
@@ -44,13 +48,25 @@ const getCategoryByName = expressAsyncHandler(async (req, res)=>{
 
 const updateCategoryById=expressAsyncHandler(async (req, res)=>{
     const {name} = req.body
-    const category = await Category.findById(req.params.id, {name})
+    const newName=primeraLetraMayuscula(name)
+    if(!name){
+        throw new Error("Datos vacios, valide la información")
+    }
+    const category = await Category.findById(req.params.id, {name:newName})
     res.status(200).json(category)
 })
 
 const deleteCategoryById=expressAsyncHandler(async (req, res)=>{
-    const category = await Category.findById(req.params.id)
+    const category = await Category.findByIdAndDelete(req.params.id)
     res.status(200).json(category)
 })
 
+function quitarAcentos(data){
+	const acentos = {'á':'a','é':'e','í':'i','ó':'o','ú':'u','Á':'A','É':'E','Í':'I','Ó':'O','Ú':'U'};
+	return data.split('').map( letra => acentos[letra] || letra).join('').toString();	
+}
+
+function primeraLetraMayuscula(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
 module.exports={addCategory, getAllCategories, getCategoryById, getCategoryByName, updateCategoryById, deleteCategoryById}
