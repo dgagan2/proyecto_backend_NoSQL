@@ -1,17 +1,18 @@
 const express = require("express")
-const passport = require("passport")
 const productRoutes=express.Router()
 const {getAllProducts, getProductById, getProductByName}= require("../../controllers/products/getProducts")
-const {checkAdminRole, checkRoles} = require("../../middleware/auth.handler")
-
-
+const {checkRoles, protect} = require("../../middleware/auth.handler")
+const {addProduct, updateProduct, deleteProduct}= require("../../controllers/products/products")
+const addComment=require("../../controllers/products/comments")
 // Rutas productos
 productRoutes.get("/", getAllProducts)
 productRoutes.get("/:id", getProductById)
 productRoutes.get("/search/:name", getProductByName )
-productRoutes.post("/", passport.authenticate('jwt', {session:false}), checkAdminRole, )
-productRoutes.patch("/:id", passport.authenticate('jwt', {session:false}), checkAdminRole, )
-productRoutes.delete("/:id", passport.authenticate('jwt', {session:false}), checkAdminRole, )
+productRoutes.post("/", protect(), checkRoles('admin', 'seller'), addProduct)
+productRoutes.patch("/:id", protect(), checkRoles('admin', 'seller'), updateProduct )
+productRoutes.delete("/:id", protect(), checkRoles('admin', 'seller'), deleteProduct )
+
+productRoutes.post("/comments", protect(), addComment )
 
 
 module.exports=productRoutes

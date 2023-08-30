@@ -7,24 +7,29 @@ const productSchema=mongoose.Schema({
     },
     price:{
         type:Number,
-        require:[true, "El precio esta vacio"]
+        required:[true, "El precio esta vacio"]
     },
     category:{
-        type: mongoose.Schema.Types.ObjectId,
-        require: [true, "Categoria necesaria"],
+        type: [mongoose.Schema.Types.ObjectId],
+        required: [true, "Categoria necesaria"],
         ref:'Categorie'
     },
     description:{
         type: String,
-        require:false,
+        required:false,
     },
     image:{
         type: Array,
-        require: false
+        required: false
+    },
+    stock:{
+        type:Number,
+        required:false,
+        default: 0
     },
     seller:{
         type:mongoose.Schema.Types.ObjectId,
-        require:[true, "Ingrese la informacion del vendedor"],
+        required:[true, "Ingrese la informacion del vendedor"],
         ref: 'Seller'
     }
 },{timestamps: true})

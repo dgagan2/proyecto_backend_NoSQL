@@ -5,7 +5,7 @@ const bcrypt = require("bcrypt")
 const getToken= require("../../services/jwt/tokenSignin")
 const Profile = require("../../models/user/profileUserModels")
 const {validarPassword}=require("../../services/validations/userValidation")
-const {connectDB, disconnectDB}=require("../../config/db")
+
 
 const login = expressAsyncHandler(async (req, res)=>{
     
@@ -21,6 +21,7 @@ const login = expressAsyncHandler(async (req, res)=>{
         throw new Error("Disabled user")
     }
     if(user &&(await bcrypt.compare(password, user.password))){
+        const profile = await Profile.findOne({user: user.id})
         const audSession = await Audit.create({
             idUser: user.id,
             email: user.email
@@ -28,12 +29,12 @@ const login = expressAsyncHandler(async (req, res)=>{
         const payload = {
             sub: user.id,
             email: user.email,
+            name: profile.name,
             role: user.role,
             state: user.state,
             idSession: audSession.id
         }
         const token= getToken(payload)
-        const profile = await Profile.findOne({user: user.id})
         res.json({
             id: user.id,
             name: profile.name,

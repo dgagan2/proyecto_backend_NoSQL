@@ -1,5 +1,10 @@
 const User = require("../models/user/usersModels")
 const bcrypt = require("bcrypt")
+const passport = require("passport")
+function protect(){
+    return passport.authenticate('jwt', {session:false})
+}
+
 function checkAdminRole(req, res, next){
     const user = req.user
     if(user.role === "admin" && user.state === "active"){
@@ -31,4 +36,4 @@ async function checkPassword(email, oldPassword){
     }
 }
 
-module.exports ={checkAdminRole, checkRoles, checkPassword}
+module.exports ={checkAdminRole, checkRoles, checkPassword, protect}
