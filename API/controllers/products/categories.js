@@ -39,7 +39,6 @@ const getCategoryByName = expressAsyncHandler(async (req, res)=>{
     }
     const category = await Category.find({name: {$regex:name, $options:'i'}})
     if(category){
-        console.log(category)
         res.status(200).json(category)
     }else{
         res.status(404)

@@ -1,10 +1,11 @@
 const express = require("express")
 const passport = require("passport")
 const cartRoutes=express.Router()
-const {addOrder}=require("../../controllers/products/shoppingCart")
-cartRoutes.get("/:id")
+const {addOrder, getOrder, updateOrder, deleteOrderByFront}=require("../../controllers/products/shoppingCart")
+
+cartRoutes.get("/", getOrder)
 cartRoutes.post("/", addOrder)
-cartRoutes.patch("/:id")
-cartRoutes.delete("/:id")
+cartRoutes.patch("/:id", updateOrder)
+cartRoutes.delete("/:id", deleteOrderByFront)
 
 module.exports=cartRoutes
