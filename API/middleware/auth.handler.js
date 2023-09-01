@@ -1,6 +1,8 @@
 const User = require("../models/user/usersModels")
 const bcrypt = require("bcrypt")
 const passport = require("passport")
+
+
 function protect(){
     return passport.authenticate('jwt', {session:false})
 }
