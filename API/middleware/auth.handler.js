@@ -36,4 +36,12 @@ async function checkPassword(email, oldPassword){
     }
 }
 
-module.exports ={checkAdminRole, checkRoles, checkPassword, protect}
+function checkApiKey (req, res, next) {
+    const apikey = req.headers.api
+    if (apikey === process.env.APIKEY) {
+      next()
+    } else {
+      next(res.status(403).json({message:"Wrong api key"}))
+    }
+}
+module.exports ={checkAdminRole, checkRoles, checkPassword, protect, checkApiKey}
