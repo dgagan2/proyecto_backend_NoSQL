@@ -1,14 +1,45 @@
 const expressAsyncHandler = require("express-async-handler")
+const Bill=require("../../models/product/salesModels")
+const Product=require("../../models/product/productModels")
 const Order=require("../../models/product/cart/orderSchemaModel")
 
-const addOrder=expressAsyncHandler(async (req, res)=>{
-    const {products}=req.body
+const addBill=expressAsyncHandler(async (req, res)=>{
+
+    const {products, total}=req.body
     const userId=req.user.sub
-    const newOrder=await Order.create({
-        products,
-        userId
+
+    const productAvailability = products.map(async (product) => {
+        const stock = await Product.findById(product.productId, 'stock');
+    
+        if (product.quantity > stock) {
+          throw new Error(`No hay suficiente stock para el producto ${product.productId}`);
+        }
     })
-    res.status(201).json(newOrder)
+    await Promise.all(productAvailability)
+
+    const bill = new Bill({
+        userId,
+        products: products.map((product) => ({
+          productId: product.productId,
+          title: product.title,
+          quantity: product.quantity,
+          price: product.price,
+          itemValue: product.itemValue,
+        })),
+        total
+    });
+
+    const savedBill = await bill.save()
+
+    for (const product of products) {
+        await Product.findByIdAndUpdate(
+        product.productId,
+        { $inc: { stock: -product.quantity } }, // Resta la cantidad vendida del inventario
+        { new: true }
+    );
+    }
+
+    return res.status(200).json(savedBill)
 })
 
 const getOrder=async (req, res)=>{
@@ -61,4 +92,4 @@ const deleteOrderByFront= async (req, res)=>{
    
 }
 
-module.exports={addOrder, getOrder, updateOrder, deleteOrderByFront}
+module.exports={addBill}

@@ -4,6 +4,7 @@ const categoryRoutes=require("./product/category.routes")
 const {protect} = require("../middleware/auth.handler")
 const cartRoutes=require("./product/cart.routes")
 const subcategoriesRoutes=require("./product/subcategories.routes")
+const billRoutes = require("./product/bill.routes")
 
 const routerApi = (app)=>{
     app.get('/', (req, res)=>{res.send("Welcome")})
@@ -12,6 +13,7 @@ const routerApi = (app)=>{
     app.use("/categories", categoryRoutes)
     app.use("/subcategories", subcategoriesRoutes)
     app.use("/shoppingCart", protect(), cartRoutes )
+    app.use("/shoppingCart", protect(), billRoutes )
     app.get('/*', (req, res)=>{res.status(400).json({message:"Route Not Found"})})
 }
 
