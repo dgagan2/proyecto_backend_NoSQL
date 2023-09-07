@@ -13,7 +13,7 @@ const routerApi = (app)=>{
     app.use("/categories", categoryRoutes)
     app.use("/subcategories", subcategoriesRoutes)
     app.use("/shoppingCart", protect(), cartRoutes )
-    app.use("/shoppingCart", protect(), billRoutes )
+    app.use("/bill", protect(), billRoutes )
     app.get('/*', (req, res)=>{res.status(400).json({message:"Route Not Found"})})
 }
 

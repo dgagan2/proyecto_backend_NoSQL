@@ -9,14 +9,13 @@ const addBill=expressAsyncHandler(async (req, res)=>{
     const userId=req.user.sub
 
     const productAvailability = products.map(async (product) => {
-        const stock = await Product.findById(product.productId, 'stock');
-    
-        if (product.quantity > stock) {
+        const {stock} = await Product.findById(product.productId, 'stock');
+        var existStock= stock - product.quantity
+        if (existStock <0) {
           throw new Error(`No hay suficiente stock para el producto ${product.productId}`);
         }
     })
     await Promise.all(productAvailability)
-
     const bill = new Bill({
         userId,
         products: products.map((product) => ({
