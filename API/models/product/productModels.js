@@ -14,6 +14,11 @@ const productSchema=mongoose.Schema({
         required: [true, "Categoria necesaria"],
         ref:'Categorie'
     },
+    subcategory:{
+        type: [mongoose.Schema.Types.ObjectId],
+        required: [true, "Subcategoria necesaria"],
+        ref:'Subcategory'
+    },
     description:{
         type: String,
         required:false,

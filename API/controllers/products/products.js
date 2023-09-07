@@ -1,9 +1,18 @@
 const expressAsyncHandler = require("express-async-handler")
 const Product=require("../../models/product/productModels")
 const Category=require("../../models/product/categoriesModels")
-const addProduct=expressAsyncHandler(async (req, res)=>{
-    const {title, price, category, description, image, stock} = req.body
-    if(!title || !price || !category || !description || !stock){
+const upload =require("../../config/multer")
+const uploadFile=require("../../utils/uploadFiles")
+
+const addProduct=expressAsyncHandler(upload.fields([{name:'image', maxCount:1}]), async (req, res)=>{
+    const {title, price, category, subcategory, description, stock} = req.body
+    const {image}=req.files.image
+    if(image && image.length>0){
+        var {downloadURL}= uploadFile(image[0])
+    }else{
+        throw new Error("Debe cargar una imagen")
+    }
+    if(!title || !price || !category || !subcategory || !description || !stock){
         throw new Error("Debe diligenciar todo los campos")
     }
     try {
@@ -15,8 +24,9 @@ const addProduct=expressAsyncHandler(async (req, res)=>{
         title: primeraLetraMayuscula(title),
         price,
         category,
+        subcategory,
         description,
-        image,
+        image: downloadURL,
         seller: req.user.sub
     })
     res.status(201).json(newProduct)
@@ -30,7 +40,11 @@ const updateProduct= expressAsyncHandler(async (req, res)=>{
     } catch (error) {
         throw new Error("El id del producto no existe")
     }
-    const {title=primeraLetraMayuscula(title), price, category, description, image, stock} = req.body
+    const {title=primeraLetraMayuscula(title), price, category, subcategory, description, stock} = req.body
+    const {image}=req.files.image
+    if(image && image.length>0){
+        var {downloadURL}= uploadFile(image[0])
+    }
     const seller =req.user.sub
     if(!title || !price || !category || !description || !stock){
         throw new Error("Debe diligenciar todo los campos")
@@ -40,8 +54,9 @@ const updateProduct= expressAsyncHandler(async (req, res)=>{
             title,
             price,
             category,
+            subcategory,
             description,
-            image,
+            image: downloadURL,
             stock,
             seller
         })
