@@ -4,29 +4,27 @@ const Category=require("../../models/product/categoriesModels")
 const upload =require("../../config/multer")
 const uploadFile=require("../../utils/uploadFiles")
 
-const addProduct=expressAsyncHandler(upload.fields([{name:'image', maxCount:1}]), async (req, res)=>{
-    const {title, price, category, subcategory, description, stock} = req.body
-    const {image}=req.files.image
-    if(image && image.length>0){
-        var {downloadURL}= uploadFile(image[0])
-    }else{
-        throw new Error("Debe cargar una imagen")
-    }
+const addProduct=expressAsyncHandler(async (req, res)=>{
+    const {title, price, category, nameCategory, nameSubcategory, subcategory, description, stock} = req.body
+    const {image}=req.files
+
     if(!title || !price || !category || !subcategory || !description || !stock){
         throw new Error("Debe diligenciar todo los campos")
     }
-    try {
-        await Category.findById(category)
-    } catch (error) {
-        throw new Error("El id de la categoria no existe")
+    if(image && image.length>0){
+        var {downloadURL}=await uploadFile(image[0])
+    }else{
+        throw new Error("Debe cargar una imagen")
     }
+
     const newProduct = await Product.create({
         title: primeraLetraMayuscula(title),
         price,
-        category,
-        subcategory,
+        category:{_id:category, nameCategory},
+        subcategory:{_id:subcategory, nameSubcategory},
         description,
         image: downloadURL,
+        stock,
         seller: req.user.sub
     })
     res.status(201).json(newProduct)
@@ -40,10 +38,10 @@ const updateProduct= expressAsyncHandler(async (req, res)=>{
     } catch (error) {
         throw new Error("El id del producto no existe")
     }
-    const {title=primeraLetraMayuscula(title), price, category, subcategory, description, stock} = req.body
-    const {image}=req.files.image
+    const {title=primeraLetraMayuscula(title), price, category, nameCategory, nameSubcategory, subcategory, description, stock} = req.body
+    const {image}=req.files
     if(image && image.length>0){
-        var {downloadURL}= uploadFile(image[0])
+        var {downloadURL}= await uploadFile(image[0])
     }
     const seller =req.user.sub
     if(!title || !price || !category || !description || !stock){
@@ -53,12 +51,12 @@ const updateProduct= expressAsyncHandler(async (req, res)=>{
         const product=await Product.findByIdAndUpdate(req.params.id,{
             title,
             price,
-            category,
-            subcategory,
+            category:{_id:category, nameCategory},
+            subcategory:{_id:subcategory, nameSubcategory},
             description,
             image: downloadURL,
             stock,
-            seller
+            seller: req.user.sub
         })
         res.status(201).json({message:"Producto actualizado"})
     }else{

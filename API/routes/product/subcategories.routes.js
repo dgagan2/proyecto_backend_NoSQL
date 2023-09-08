@@ -1,9 +1,9 @@
 const express = require("express")
 const subcategoriesRoutes=express.Router()
 const { protect, checkAdminRole}=require("../../middleware/auth.handler")
-const { addSubcategory, getSubcategory, updateSubcategory, deleteSubcategory, getSubcategoryByID } = require("../../controllers/products/subcategories")
+const { addSubcategory, getSubcategory, updateSubcategory, deleteSubcategory, getSubcategoryByID, getSubcategoryByCategory } = require("../../controllers/products/subcategories")
 
-
+subcategoriesRoutes.get("/byCategory", getSubcategoryByCategory)
 subcategoriesRoutes.get("/:id", getSubcategoryByID)
 subcategoriesRoutes.get("/", getSubcategory)
 subcategoriesRoutes.post("/", protect(), checkAdminRole, addSubcategory)

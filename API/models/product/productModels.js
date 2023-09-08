@@ -10,22 +10,34 @@ const productSchema=mongoose.Schema({
         required:[true, "El precio esta vacio"]
     },
     category:{
-        type: [mongoose.Schema.Types.ObjectId],
-        required: [true, "Categoria necesaria"],
-        ref:'Categorie'
+        _id: {
+            type: mongoose.Schema.Types.ObjectId,
+            required: [true, "Categoria necesaria"],
+            ref:'Categorie'
+        },
+        nameCategory: {
+            type: String,
+            required: [true, "Nombre de la subcategoría vacío"]
+        }
     },
-    subcategory:{
-        type: [mongoose.Schema.Types.ObjectId],
-        required: [true, "Subcategoria necesaria"],
-        ref:'Subcategory'
-    },
+    subcategory: {
+        _id: {
+          type: mongoose.Schema.Types.ObjectId,
+          required: [true, "Subcategoría necesaria"],
+          ref: 'Subcategory'
+        },
+        nameSubcategory: {
+          type: String,
+          required: [true, "Nombre de la subcategoría vacío"]
+        }
+      },
     description:{
         type: String,
         required:false,
     },
     image:{
-        type: Array,
-        required: false
+        type: String,
+        required: true
     },
     stock:{
         type:Number,

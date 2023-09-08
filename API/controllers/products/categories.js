@@ -1,5 +1,6 @@
 const expressAsyncHandler = require("express-async-handler")
 const Category = require("../../models/product/categoriesModels")
+const {primeraLetraMayuscula}=require("../../utils/gramatica")
 
 const addCategory=expressAsyncHandler(async (req, res)=>{
     const {name}=req.body
@@ -9,6 +10,15 @@ const addCategory=expressAsyncHandler(async (req, res)=>{
     const newName=primeraLetraMayuscula(name)
     const newCategory=await Category.create({name:newName})
     res.status(201).json(newCategory)
+})
+
+
+const addJSONCategories=expressAsyncHandler(async (req, res)=>{
+    const categoriasGuardadas = await Category.insertMany(req.body)
+    if(!categoriasGuardadas){
+        throw new Error("Ingrese las categorias a crear")
+    }
+    res.status(201).json(categoriasGuardadas)
 })
 
 const getAllCategories=expressAsyncHandler(async (req, res)=>{
@@ -60,12 +70,5 @@ const deleteCategoryById=expressAsyncHandler(async (req, res)=>{
     res.status(200).json(category)
 })
 
-function quitarAcentos(data){
-	const acentos = {'á':'a','é':'e','í':'i','ó':'o','ú':'u','Á':'A','É':'E','Í':'I','Ó':'O','Ú':'U'};
-	return data.split('').map( letra => acentos[letra] || letra).join('').toString();	
-}
 
-function primeraLetraMayuscula(string) {
-    return string.charAt(0).toUpperCase() + string.slice(1);
-}
-module.exports={addCategory, getAllCategories, getCategoryById, getCategoryByName, updateCategoryById, deleteCategoryById}
+module.exports={addCategory, getAllCategories, getCategoryById, getCategoryByName, updateCategoryById, deleteCategoryById, addJSONCategories}

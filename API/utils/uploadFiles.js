@@ -3,8 +3,8 @@ const storage =require("../config/firebase")
 const sharp =require("sharp")
 
 async function uploadFile(file){
-    let fileBuffer= await sharp(file.buffer).resize({width:300, height:300, fit: 'cover'}).toBuffer()
-
+    let fileBuffer= await sharp(file.buffer).toBuffer()
+  
     const fileRef=ref(storage, `files/${file.originalname} ${Date.now()}`)
     const fileMetaData={
         contentType:file.mimetype
@@ -16,7 +16,7 @@ async function uploadFile(file){
         fileMetaData
     )
 
-    await fileUploadPromise()
+    await fileUploadPromise
 
     const fileDownloadURL=await getDownloadURL(fileRef)
 

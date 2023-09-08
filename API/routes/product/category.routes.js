@@ -6,7 +6,7 @@ const { addCategory,
         getCategoryById, 
         getCategoryByName,
         updateCategoryById, 
-        deleteCategoryById}=require("../../controllers/products/categories")
+        deleteCategoryById, addJSONCategories}=require("../../controllers/products/categories")
 
 
 //Rutas categorias
@@ -14,6 +14,7 @@ categoryRoutes.get("/", getAllCategories)
 categoryRoutes.get("/:id", getCategoryById)
 categoryRoutes.get("/search/", getCategoryByName)
 categoryRoutes.post("/", protect(), checkAdminRole, addCategory )
+categoryRoutes.post("/JSON", protect(), checkAdminRole, addJSONCategories )
 categoryRoutes.patch("/:id", protect(), checkAdminRole, updateCategoryById )
 categoryRoutes.delete("/:id", protect(), checkAdminRole, deleteCategoryById )
 
