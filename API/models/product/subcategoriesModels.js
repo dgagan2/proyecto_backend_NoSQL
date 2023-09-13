@@ -2,9 +2,15 @@ const mongoose = require("mongoose")
 
 const subcategorySchema=mongoose.Schema({
     category:{
-        type:mongoose.Schema.Types.ObjectId,
-        required:[true, "Ingrese la categoria"],
-        ref: 'Category'
+        _id:{
+            type:mongoose.Schema.Types.ObjectId,
+            required:[true, "Ingrese la categoria"],
+            ref: 'Category'
+        },
+        nameCategory: {
+            type: String,
+            required: [true, "Nombre de la categoría vacío"]
+        }
     },
     name:{
         type:String,

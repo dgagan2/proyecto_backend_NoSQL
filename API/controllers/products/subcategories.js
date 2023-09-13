@@ -2,11 +2,16 @@ const expressAsyncHandler = require("express-async-handler")
 const Subcategory=require("../../models/product/subcategoriesModels")
 
 const addSubcategory=expressAsyncHandler(async (req, res)=>{
-    const {category, name}=req.body
+    const {idCategory, nameCategory, name}=req.body
     if(!category || !name){
         throw new Error("El campo de categoria y nombre son obligatorios")
     }
-    const newSubcategory= await Subcategory.create({category, name:primeraLetraMayuscula(name)})
+    const newSubcategory= await Subcategory.create({
+        category:{
+            _id:idCategory,
+            nameCategory
+        }, 
+        name:primeraLetraMayuscula(name)})
     if(newSubcategory){
         res.status(200).json({message: "Subcategoria creada", newSubcategory})
     }
@@ -30,9 +35,14 @@ const getSubcategoryByID=expressAsyncHandler(async (req, res)=>{
 })
 
 const updateSubcategory=async (req, res)=>{
-    const {name, category}= req.body 
+    const {idCategory, nameCategory, name}=req.body
     try {
-        const update= Subcategory.findByIdAndUpdate(req.params.id, {category, name})
+        const update= Subcategory.findByIdAndUpdate(req.params.id, {
+            category:{
+                _id:idCategory,
+                nameCategory
+            }, 
+            name:primeraLetraMayuscula(name)})
         res.statud(200).json({message: "Subcategoria actualizada", update})
     } catch (error) {
         res.status(500).json({message: "La subcategoria no existe", error})
